@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Group;
 use App\Models\User;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Console\Command;
@@ -55,19 +54,16 @@ class UserMember extends Command
             return;
         }
 
-        $group = Group::where(['id' => $groupId])->with('users')->first();
-        $expireTime = $group->expire_hours;
+        $user = User::where(['id' => $userId])->with('groups')->first();
 
-        $data = [
-            'expired_at' => Date::now()->addHours($expireTime),
-        ];
+        $data = ['expired_at' => Date::now()];
 
-        if ($group->users->contains($userId)) {
-            $group->users()->updateExistingPivot($userId, $data);
+        if ($user->groups->contains($groupId)) {
+            $user->groups()->updateExistingPivot($groupId, $data);
         } else {
-            $group->users()->attach($userId, $data);
+            $user->groups()->attach($groupId, $data);
         }
 
-        $this->info("Вы успешно добавили пользователя с $userId в $groupId");
+        $this->info("Вы успешно добавили пользователя с id $userId в группу с id $groupId");
     }
 }
