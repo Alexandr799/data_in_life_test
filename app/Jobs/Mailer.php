@@ -31,7 +31,7 @@ class Mailer implements ShouldQueue
         try {
             Mail::to($this->email)->send($this->mail);
         } catch (\Exception $e) {
-            Log::info('Произошла ошибка при отрпавке письма на ' .
+            Log::info('Произошла ошибка при отправке письма на ' .
                 $this->email . ' текст ошибки ' . $e->getMessage()
             );
         }
