@@ -20,13 +20,20 @@ class Mailer implements ShouldQueue
      * Create a new job instance.
      */
     public function __construct(public Mailable $mail, public string $email)
-    {}
+    {
+    }
 
     /**
      * Execute the job.
      */
     public function handle(): void
     {
-        Mail::to($this->email)->send($this->mail);
+        try {
+            Mail::to($this->email)->send($this->mail);
+        } catch (\Exception $e) {
+            Log::info('Произошла ошибка при отрпавке письма на ' .
+                $this->email . ' текст ошибки ' . $e->getMessage()
+            );
+        }
     }
 }

@@ -37,5 +37,7 @@ class DeactivateUsers implements ShouldQueue
             $user->active = false;
             $user->save();
         }
+
+        Log::info('User c id ' . $user->id . ' деактивирован');
     }
 }
