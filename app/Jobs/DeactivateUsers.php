@@ -36,8 +36,7 @@ class DeactivateUsers implements ShouldQueue
         if ($user->groups()->count() === 0) {
             $user->active = false;
             $user->save();
+            Log::info('User c id ' . $user->id . ' деактивирован');
         }
-
-        Log::info('User c id ' . $user->id . ' деактивирован');
     }
 }
