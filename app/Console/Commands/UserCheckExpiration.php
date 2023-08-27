@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\DeactivateUsers;
 use App\Mail\DeleteInGroupMail;
 use App\Models\User;
 use Illuminate\Console\Command;
@@ -52,10 +53,10 @@ class UserCheckExpiration extends Command
             ->where('expired_at', '<', Date::now())->delete();
 
         foreach ($groupMembershipForDeleteArray as $memberShip) {
-            var_dump($memberShip->email);
             Mail::to($memberShip->email)->send(
                 new DeleteInGroupMail($memberShip->userName, $memberShip->groupName)
             );
+            DeactivateUsers::dispatch($memberShip->userId);
         }
 
         $this->info('Пользователи успешно удалены их групп');
