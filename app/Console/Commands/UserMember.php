@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Events\ExpiredAtEvent;
+use App\Models\Group;
 use App\Models\User;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Console\Command;
@@ -55,15 +57,16 @@ class UserMember extends Command
         }
 
         $user = User::where(['id' => $userId])->with('groups')->first();
+        $group = Group::where(['id' => $groupId])->first();
 
         $data = ['expired_at' => Date::now()];
 
-        if ($user->groups->contains($groupId)) {
-            $user->groups()->updateExistingPivot($groupId, $data);
-        } else {
-            $user->groups()->attach($groupId, $data);
-        }
+        $user->groups()->sync([$groupId => $data], false);
 
+        $user->active = true;
+        $user->save();
+
+        event(new ExpiredAtEvent($user, $group));
         $this->info("Вы успешно добавили пользователя с id $userId в группу с id $groupId");
     }
 }
