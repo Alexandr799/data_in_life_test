@@ -57,12 +57,6 @@ class UserCheckExpiration extends Command
                 new DeleteInGroupMail($memberShip->userName, $memberShip->groupName)
             );
         }
-        // User::leftJoin('group_user', 'users.id', '=', 'group_user.user_id')
-        //     ->withCount('groups')
-        //     ->groupBy('users.id')
-        //     ->where('users.active', true)
-        //     ->having('groups_count', '=', 0)
-        //     ->update(['active' => false]);
 
         $this->info('Пользователи успешно удалены их групп');
     }

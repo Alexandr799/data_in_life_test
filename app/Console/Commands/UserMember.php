@@ -23,9 +23,11 @@ class UserMember extends Command
      *
      * @var string
      */
-    protected $description = 'Добавить пользователя user_id в группу group_id,
+    protected $description = <<<'DESCRIPTION'
+    Добавить пользователя user_id в группу group_id,
     если пользователь не активен (active == false),
-    активировать его (active = true)';
+    активировать его (active = true)
+    DESCRIPTION;
 
     /**
      * Execute the console command.
