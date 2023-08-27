@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
+        Log::info('Запускаем команду user:check_expiratio');
         $schedule->command('user:check_expiration')->everyMinute();
     }
 
