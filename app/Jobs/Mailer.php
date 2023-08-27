@@ -2,40 +2,31 @@
 
 namespace App\Jobs;
 
-use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\Log;
 
-class DeactivateUsers implements ShouldQueue
+class Mailer implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * Create a new job instance.
-     * @param array<int> $usersId массив id прользователей
      */
-    public function __construct(public int $userId)
-    {
-    }
+    public function __construct(public Mailable $mail, public string $email)
+    {}
 
     /**
      * Execute the job.
      */
     public function handle(): void
     {
-        $user = User::find($this->userId);
-
-        if (empty($user)) return;
-        if (!$user->active) return;
-
-        if ($user->groups()->count() === 0) {
-            $user->active = false;
-            $user->save();
-        }
+        Mail::to($this->email)->send($this->mail);
     }
 }
